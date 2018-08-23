@@ -48,14 +48,13 @@ typedef struct
  */
 typedef struct
 {
-
     //@ magic start chars 'm', 'd'
     uint8_t     magic_start[2];
     //@ command msb & lsb
     uint8_t     cmd_msb;
     uint8_t     cmd_lsb;
     //@ command payload
-    uint8_t     data[AUDIO_CONTROL_PAYLOAD_SIZE];
+    uint8_t     data[AUDIO_CONTROL_PACKET_PAYLOAD_SIZE];
     //@ Sequential packet number
     uint32_t    seq;
     //@ timing error between xmos and audio host
@@ -67,26 +66,6 @@ typedef struct
     //@ Poor's man CRC
     uint16_t    crc;
 } __attribute__((packed)) AudioControlPacket;
-
-/**
- * Static variables
- */
-
-/**
- * Default Control packet definition
- */
-static const  AudioControlPacket _AUDIO_DEFAULT_CONTROL_PACKET =
-{
-    .magic_start = {'m', 'd'},
-    .cmd_msb = 0,
-    .cmd_lsb = 0,
-    .data = {0},
-    .seq = 0,
-    .timing_error = 0,
-    .continuation = 0,
-    .crc = 0,
-    .magic_stop = 'z'
-};
 
 #ifdef __cplusplus
 static_assert(sizeof(AudioControlPacket) == 48);
