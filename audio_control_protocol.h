@@ -68,7 +68,8 @@ typedef struct
 } __attribute__((packed)) AudioControlPacket;
 
 #ifdef __cplusplus
-static_assert(sizeof(AudioControlPacket) == 48);
+constexpr uint32_t AUDIO_CONTROL_PACKET_SIZE = sizeof(AudioControlPacket);
+static_assert(AUDIO_CONTROL_PACKET_SIZE == 48);
 }
 #endif
 
