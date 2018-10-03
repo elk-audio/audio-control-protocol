@@ -41,7 +41,25 @@ typedef struct
     uint32_t    major;
     uint32_t    minor;
     uint32_t    revision;
-} AudioVersionPacket;
+} AudioVersionData;
+
+/**
+ * Data structure to denote the payload elements associated with START_COMMAND
+ */
+typedef struct StartCmdData
+{
+    uint32_t buffer_size;
+} StartCmdData;
+
+/**
+ * A union for the data payload of the control packet.
+ */
+typedef union DataPayload
+{
+    StartCmdData start_cmd_data;
+    AudioVersionData version_data;
+    uint8_t raw_data[AUDIO_CONTROL_PACKET_PAYLOAD_SIZE];
+} DataPayload;
 
 /**
  * Packet definition
@@ -54,7 +72,7 @@ typedef struct
     uint8_t     cmd_msb;
     uint8_t     cmd_lsb;
     //@ command payload
-    uint8_t     data[AUDIO_CONTROL_PACKET_PAYLOAD_SIZE];
+    DataPayload  data_payload;
     //@ Sequential packet number
     uint32_t    seq;
     //@ timing error between xmos and audio host
