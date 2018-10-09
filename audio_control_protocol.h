@@ -6,9 +6,10 @@
 #ifndef AUDIO_PROTOCOL_H_
 #define AUDIO_PROTOCOL_H_
 
+#ifndef __KERNEL__
 #include <stdint.h>
-#include <string.h>
 #include <stddef.h>
+#endif
 
 /**
  * Constants
