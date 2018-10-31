@@ -1,0 +1,2 @@
+add_library(audio_control_protocol INTERFACE)
+target_include_directories(audio_control_protocol INTERFACE include)
