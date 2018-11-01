@@ -1,7 +1,6 @@
 /**
- * audio_protocol.h
- *
  * @brief Protocol definition for messages in control headers
+ * @copyright MIND Music Labs AB, Stockholm
  */
 #ifndef AUDIO_PROTOCOL_H_
 #define AUDIO_PROTOCOL_H_
@@ -11,15 +10,8 @@
 #include <stddef.h>
 #endif
 
-/**
- * Constants
- */
+#define AUDIO_CONTROL_PACKET_SIZE 48
 #define AUDIO_CONTROL_PACKET_PAYLOAD_SIZE 32
-
-#ifdef __cplusplus
-#include <cassert>
-namespace AudioProtocol {
-#endif
 
 /**
  * Command codes (MSB)
@@ -27,40 +19,10 @@ namespace AudioProtocol {
 typedef enum
 {
     AUDIO_CMD_NULL = 0,
-    AUDIO_CMD_START = 123,
-    AUDIO_CMD_STOP = 234,
     AUDIO_CMD_MUTE = 100,
-    SENSEI_PACKET = 179,
-    AUDIO_FIRMWARE_VER_CHECK = 191
+    AUDIO_CMD_UNMUTE = 101,
+    GPIO_PACKET = 179
 } AudioControlCommands;
-
-/**
- * Packet definition for audio system version
- */
-typedef struct
-{
-    uint32_t    major;
-    uint32_t    minor;
-    uint32_t    revision;
-} AudioVersionData;
-
-/**
- * Data structure to denote the payload elements associated with START_COMMAND
- */
-typedef struct StartCmdData
-{
-    uint32_t buffer_size;
-} StartCmdData;
-
-/**
- * A union for the data payload of the control packet.
- */
-typedef union DataPayload
-{
-    StartCmdData start_cmd_data;
-    AudioVersionData version_data;
-    uint8_t raw_data[AUDIO_CONTROL_PACKET_PAYLOAD_SIZE];
-} DataPayload;
 
 /**
  * Packet definition
@@ -73,7 +35,7 @@ typedef struct
     uint8_t     cmd_msb;
     uint8_t     cmd_lsb;
     //@ command payload
-    DataPayload  data_payload;
+    uint8_t     payload[AUDIO_CONTROL_PACKET_PAYLOAD_SIZE];
     //@ Sequential packet number
     uint32_t    seq;
     //@ timing error between xmos and audio host
@@ -85,11 +47,5 @@ typedef struct
     //@ Poor's man CRC
     uint16_t    crc;
 } __attribute__((packed)) AudioControlPacket;
-
-#ifdef __cplusplus
-constexpr uint32_t AUDIO_CONTROL_PACKET_SIZE = sizeof(AudioControlPacket);
-static_assert(AUDIO_CONTROL_PACKET_SIZE == 48);
-}
-#endif
 
 #endif /* AUDIO_PROTOCOL_H_ */
