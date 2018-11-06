@@ -13,7 +13,7 @@
 #endif
 
 #include "audio_control_protocol/device_control_protocol.h"
-#include "audio_control_protocoldevice_packet_helper.h"
+#include "audio_control_protocol/device_packet_helper.h"
 
 static const struct device_control_packet _DEFAULT_DEVICE_CONTROL_PACKET = {
 	.magic_start = {'x', 'i'},

@@ -21,12 +21,12 @@ static const AudioControlPacket _DEFAULT_AUDIO_CONTROL_PACKET =
 
 static uint32_t _seq_number = 0;
 
-void inline create_default_audio_control_packet(AudioControlPacket* packet)
+inline void create_default_audio_control_packet(AudioControlPacket* packet)
 {
     memcpy(packet, &_DEFAULT_AUDIO_CONTROL_PACKET, AUDIO_CONTROL_PACKET_SIZE);
 }
 
-int inline check_audio_packet_for_magic_words(const AudioControlPacket* packet)
+inline int check_audio_packet_for_magic_words(const AudioControlPacket* packet)
 {
     if(packet->magic_start[0] != 'm' ||
        packet->magic_start[0] != 'd' ||
@@ -38,26 +38,26 @@ int inline check_audio_packet_for_magic_words(const AudioControlPacket* packet)
     return 1;
 }
 
-uint8_t inline get_audio_packet_cmd(const AudioControlPacket* packet)
+inline uint8_t get_audio_packet_cmd(const AudioControlPacket* packet)
 {
     return packet->cmd_msb;
 }
 
-void inline prepare_audio_mute_packet(AudioControlPacket* packet)
+inline void prepare_audio_mute_packet(AudioControlPacket* packet)
 {
     create_default_audio_control_packet(packet);
     packet->cmd_msb = AUDIO_CMD_MUTE;
     packet->seq = ++_seq_number;
 }
 
-void inline prepare_audio_unmute_packet(AudioControlPacket* packet)
+inline void prepare_audio_unmute_packet(AudioControlPacket* packet)
 {
     create_default_audio_control_packet(packet);
     packet->cmd_msb = AUDIO_CMD_UNMUTE;
     packet->seq = ++_seq_number;
 }
 
-void inline prepare_gpio_cmd_packet(AudioControlPacket* packet,
+inline void prepare_gpio_cmd_packet(AudioControlPacket* packet,
                                     const uint8_t* gpio_packet_data)
 {
     create_default_audio_control_packet(packet);
@@ -66,23 +66,23 @@ void inline prepare_gpio_cmd_packet(AudioControlPacket* packet,
     packet->seq = ++_seq_number;
 }
 
-void inline get_gpio_packet_data(const AudioControlPacket* packet,
+inline void get_gpio_packet_data(const AudioControlPacket* packet,
                                  uint8_t* gpio_packet_data)
 {
     memcpy(gpio_packet_data, packet->payload, GPIO_PACKET_SIZE);
 }
 
-int32_t inline get_timing_error(const AudioControlPacket* packet)
+inline int32_t get_timing_error(const AudioControlPacket* packet)
 {
     return packet->timing_error;
 }
 
-void inline set_timing_error(AudioControlPacket* packet, int32_t timing_error)
+inline void set_timing_error(AudioControlPacket* packet, int32_t timing_error)
 {
     packet->timing_error = timing_error;
 }
 
-void inline reset_sequence_counter()
+inline void reset_sequence_counter()
 {
     _seq_number = 0;
 }
