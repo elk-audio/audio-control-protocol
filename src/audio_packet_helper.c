@@ -1,7 +1,7 @@
 #include <string.h>
 
-#include "audio_control_protocol.h"
-#include "audio_packet_helper.h"
+#include "audio_control_protocol/audio_control_protocol.h"
+#include "audio_control_protocol/audio_packet_helper.h"
 
 // TODO : this cna be a problem if gpio packet is updated. Find a better solution
 #define GPIO_PACKET_SIZE 32
