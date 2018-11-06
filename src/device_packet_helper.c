@@ -17,14 +17,14 @@ static const struct device_control_packet _DEFAULT_DEVICE_CONTROL_PACKET = {
 	.magic_stop = 'd'
 };
 
-void inline create_default_device_control_packet(struct 
+void inline create_default_device_control_packet(struct
 						device_control_packet* packet)
 {
 	memcpy(packet, &_DEFAULT_DEVICE_CONTROL_PACKET,
 				DEVICE_CONTROL_PACKET_SIZE);
 }
 
-int inline check_device_packet_for_magic_words(const struct 
+int inline check_device_packet_for_magic_words(const struct
 						device_control_packet* packet)
 {
 	if (packet->magic_start[0] != 'x' ||
@@ -80,6 +80,12 @@ void inline prepare_start_cmd_packet(struct device_control_packet* packet,
 	create_default_device_control_packet(packet);
 	packet->device_cmd = DEVICE_START;
 	*buffer_size_payload = buffer_size;
+}
+
+int inline get_buffer_size_info(struct device_control_packet* packet)
+{
+	int* buffer_size_info = (int*)packet->payload;
+	return *buffer_size_info;
 }
 
 void inline prepare_stop_cmd_packet(struct device_control_packet* packet)

@@ -10,7 +10,7 @@
 
 #include "device_control_protocol.h"
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -80,13 +80,21 @@ void prepare_start_cmd_packet(struct device_control_packet* packet,
 				int buffer_size);
 
 /**
+ * @brief Get the buffer size info from the payload
+ *
+ * @param packet the device control packet
+ * @return int the buffer size
+ */
+int get_buffer_size_info(struct device_control_packet* packet);
+
+/**
  * @brief prepares a stop cmd packet
  *
  * @param packet the device control packet
  */
 void prepare_stop_cmd_packet(struct device_control_packet* packet);
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 } // extern C
 #endif
 

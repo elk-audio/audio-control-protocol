@@ -39,8 +39,4 @@ struct device_control_packet {
 	uint8_t magic_stop;
 };
 
-#ifdef __cplusplus
-} /* namespace audioprotocol */
-#endif
-
 #endif

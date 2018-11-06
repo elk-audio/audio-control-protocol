@@ -7,7 +7,7 @@
 
 #include "audio_control_protocol.h"
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -90,7 +90,7 @@ void set_timing_error(AudioControlPacket* packet, int32_t timing_error);
  */
 void reset_sequence_counter();
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 } // extern C
 #endif
 
