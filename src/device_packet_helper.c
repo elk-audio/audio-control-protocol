@@ -22,14 +22,14 @@ static const struct device_control_packet _DEFAULT_DEVICE_CONTROL_PACKET = {
 	.magic_stop = 'd'
 };
 
-void inline create_default_device_control_packet(struct
+inline void create_default_device_control_packet(struct
 						device_control_packet* packet)
 {
 	memcpy(packet, &_DEFAULT_DEVICE_CONTROL_PACKET,
 				DEVICE_CONTROL_PACKET_SIZE);
 }
 
-int inline check_device_packet_for_magic_words(const struct
+inline int check_device_packet_for_magic_words(const struct
 						device_control_packet* packet)
 {
 	if (packet->magic_start[0] != 'x' ||
@@ -41,19 +41,19 @@ int inline check_device_packet_for_magic_words(const struct
 	return 1;
 }
 
-uint8_t inline get_device_packet_cmd(const struct device_control_packet* packet)
+inline uint8_t get_device_packet_cmd(const struct device_control_packet* packet)
 {
 	return packet->device_cmd;
 }
 
-void inline prepare_version_check_query_packet(struct
+inline void prepare_version_check_query_packet(struct
 						device_control_packet* packet)
 {
 	create_default_device_control_packet(packet);
 	packet->device_cmd = DEVICE_FIRMWARE_VERSION_CHECK;
 }
 
-void inline prepare_version_check_reply_packet(struct
+inline void prepare_version_check_reply_packet(struct
 						device_control_packet* packet,
 						uint8_t major_vers,
 						uint8_t minor_vers)
@@ -65,7 +65,7 @@ void inline prepare_version_check_reply_packet(struct
 	version_data[1] = minor_vers;
 }
 
-int inline check_if_version_matches(struct device_control_packet* packet,
+inline int check_if_version_matches(struct device_control_packet* packet,
 				uint8_t expected_major_vers,
 				uint8_t expected_minor_vers)
 {
@@ -78,7 +78,7 @@ int inline check_if_version_matches(struct device_control_packet* packet,
 	return 1;
 }
 
-void inline prepare_start_cmd_packet(struct device_control_packet* packet,
+inline void prepare_start_cmd_packet(struct device_control_packet* packet,
 					int buffer_size)
 {
 	int* buffer_size_payload = (int*)packet->payload;
@@ -87,13 +87,13 @@ void inline prepare_start_cmd_packet(struct device_control_packet* packet,
 	*buffer_size_payload = buffer_size;
 }
 
-int inline get_buffer_size_info(struct device_control_packet* packet)
+inline int get_buffer_size_info(struct device_control_packet* packet)
 {
 	int* buffer_size_info = (int*)packet->payload;
 	return *buffer_size_info;
 }
 
-void inline prepare_stop_cmd_packet(struct device_control_packet* packet)
+inline void prepare_stop_cmd_packet(struct device_control_packet* packet)
 {
 	create_default_device_control_packet(packet);
 	packet->device_cmd = DEVICE_STOP;
