@@ -5,7 +5,12 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+
+#ifdef __KERNEL__
+#include <linux/string.h>
+#else
 #include <string.h>
+#endif
 
 #include "device_control_protocol.h"
 #include "device_packet_helper.h"
@@ -28,7 +33,7 @@ int inline check_device_packet_for_magic_words(const struct
 						device_control_packet* packet)
 {
 	if (packet->magic_start[0] != 'x' ||
-		packet->magic_start[0] != 'i' ||
+		packet->magic_start[1] != 'i' ||
 		packet->magic_stop != 'd') {
 		return 0;
 	}
