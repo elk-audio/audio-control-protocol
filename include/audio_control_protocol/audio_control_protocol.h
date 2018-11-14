@@ -10,8 +10,8 @@
 #include <stddef.h>
 #endif
 
-#define AUDIO_CONTROL_PACKET_SIZE 48
 #define AUDIO_CONTROL_PACKET_PAYLOAD_SIZE 32
+#define GPIO_PACKET_SIZE AUDIO_CONTROL_PACKET_PAYLOAD_SIZE
 
 /**
  * Command codes (MSB)
@@ -47,5 +47,7 @@ typedef struct
     //@ Poor's man CRC
     uint16_t    crc;
 } __attribute__((packed)) AudioControlPacket;
+
+#define AUDIO_CONTROL_PACKET_SIZE sizeof(AudioControlPacket)
 
 #endif /* AUDIO_PROTOCOL_H_ */

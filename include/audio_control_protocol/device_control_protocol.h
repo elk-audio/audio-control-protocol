@@ -8,7 +8,6 @@
 #ifndef DEVICE_PROTOCOL_H_
 #define DEVICE_PROTOCOL_H_
 
-#define DEVICE_CONTROL_PACKET_SIZE 12
 #define DEVICE_PACKET_PAYLOAD_SIZE 8
 
 #ifndef __KERNEL__
@@ -38,5 +37,7 @@ struct device_control_packet {
 	//@ magic stop char 'd'
 	uint8_t magic_stop;
 };
+
+#define DEVICE_CONTROL_PACKET_SIZE sizeof(device_control_packet)
 
 #endif
