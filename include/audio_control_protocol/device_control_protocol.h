@@ -38,6 +38,6 @@ struct device_control_packet {
 	uint8_t magic_stop;
 };
 
-#define DEVICE_CONTROL_PACKET_SIZE sizeof(device_control_packet)
+#define DEVICE_CONTROL_PACKET_SIZE sizeof(struct device_control_packet)
 
 #endif
