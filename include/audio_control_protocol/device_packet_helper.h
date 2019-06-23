@@ -10,28 +10,42 @@
 
 #include "device_control_protocol.h"
 
-#ifdef __KERNEL__
-#include <linux/string.h>
-#else
-#include <string.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Clears the packet memory location. This is needed as memset discards 
+ *        volatile qualifier and in turn causes problems.
+ *
+ * @param packet the device control packet
+ */
+inline void clear_device_control_packet(volatile struct device_control_packet*
+							packet)
+{
+	volatile uint8_t* ptr = (uint8_t*)packet;
+	int i;
+
+	for(i = 0; i < DEVICE_CONTROL_PACKET_SIZE; i++) {
+		ptr[i] = 0;
+	}
+}
 
 /**
  * @brief Creates a default device control packet.
  *
  * @param packet the device control packet
  */
-inline void create_default_device_control_packet(struct device_control_packet*
+inline void create_default_device_control_packet(volatile struct device_control_packet*
 							packet)
 {
+	int i;
 	packet->magic_start[0] = 'x';
 	packet->magic_start[1] = 'i';
 	packet->magic_stop = 'd';
-	memset(packet->payload, 0, DEVICE_PACKET_PAYLOAD_SIZE);
+	for(i = 0; i < DEVICE_PACKET_PAYLOAD_SIZE; i++) {
+		packet->payload[i] = 0x00;
+	}
 }
 /**
  * @brief checks for the precence of magic words in the packet
@@ -39,7 +53,7 @@ inline void create_default_device_control_packet(struct device_control_packet*
  * @param packet the device control packet
  * @return 1 if packet contains magic words, 0 if not
  */
-inline int check_device_packet_for_magic_words(const struct
+inline int check_device_packet_for_magic_words(volatile const struct
 						device_control_packet* packet)
 {
 	if (packet->magic_start[0] != 'x' ||
@@ -57,7 +71,7 @@ inline int check_device_packet_for_magic_words(const struct
  * @param packet the device control packet
  * @return The device packet command.
  */
-inline uint8_t get_device_packet_cmd(const struct device_control_packet* packet)
+inline uint8_t get_device_packet_cmd(volatile const struct device_control_packet* packet)
 {
 	return packet->device_cmd;
 }
@@ -66,7 +80,7 @@ inline uint8_t get_device_packet_cmd(const struct device_control_packet* packet)
  *
  * @param packet The device control packet
  */
-inline void prepare_version_check_query_packet(struct device_control_packet*
+inline void prepare_version_check_query_packet(volatile struct device_control_packet*
 						packet)
 {
 	create_default_device_control_packet(packet);
@@ -80,7 +94,7 @@ inline void prepare_version_check_query_packet(struct device_control_packet*
  * @param major_vers The major vers
  * @param minor_vers The minor vers
  */
-inline void prepare_version_check_reply_packet(struct device_control_packet* packet,
+inline void prepare_version_check_reply_packet(volatile struct device_control_packet* packet,
 					uint8_t major_vers,
 					uint8_t minor_vers)
 {
@@ -102,11 +116,11 @@ inline void prepare_version_check_reply_packet(struct device_control_packet* pac
  *
  * @return 1 if version matches, 0 if not
  */
-inline int check_if_version_matches(struct device_control_packet* packet,
+inline int check_if_version_matches(volatile struct device_control_packet* packet,
 				uint8_t expected_major_vers,
 				uint8_t expected_minor_vers)
 {
-	uint8_t* version_data = packet->payload;
+	volatile uint8_t* version_data = packet->payload;
 	if (version_data[0] != expected_major_vers ||
 		version_data[1] != expected_minor_vers) {
 		return 0;
@@ -121,7 +135,7 @@ inline int check_if_version_matches(struct device_control_packet* packet,
  * @param packet the device control packet
  * @param the buffers size which will be inserted into the packets payload
  */
-inline void prepare_start_cmd_packet(struct device_control_packet* packet,
+inline void prepare_start_cmd_packet(volatile struct device_control_packet* packet,
 				int buffer_size)
 {
 	int* buffer_size_payload = (int*)packet->payload;
@@ -136,7 +150,7 @@ inline void prepare_start_cmd_packet(struct device_control_packet* packet,
  * @param packet the device control packet
  * @return int the buffer size
  */
-inline int get_buffer_size_info(struct device_control_packet* packet)
+inline int get_buffer_size_info(volatile struct device_control_packet* packet)
 {
 	int* buffer_size_info = (int*)packet->payload;
 	return *buffer_size_info;
@@ -147,7 +161,7 @@ inline int get_buffer_size_info(struct device_control_packet* packet)
  *
  * @param packet the device control packet
  */
-inline void prepare_stop_cmd_packet(struct device_control_packet* packet)
+inline void prepare_stop_cmd_packet(volatile struct device_control_packet* packet)
 {
 	create_default_device_control_packet(packet);
 	packet->device_cmd = DEVICE_STOP;
