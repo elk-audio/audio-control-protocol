@@ -18,9 +18,13 @@ extern "C" {
  *
  * @param packet the audio control packet
  */
-inline void create_default_audio_control_packet(AudioControlPacket* packet)
+static inline void create_default_audio_control_packet(volatile AudioControlPacket* packet)
 {
-    memset(packet, 0, AUDIO_CONTROL_PACKET_SIZE);
+    volatile int* ptr = (int*)packet;
+    for(int i = 0; i < AUDIO_CONTROL_PACKET_SIZE/4; i++)
+    {
+        ptr[i] = 0;
+    }
     packet->magic_start[0] = 'm';
     packet->magic_start[1] = 'd';
     packet->magic_stop = 'z';
@@ -32,7 +36,7 @@ inline void create_default_audio_control_packet(AudioControlPacket* packet)
  * @param packet the audio control packet
  * @return 1 if packet contains magic words, 0 if not
  */
-inline int check_audio_packet_for_magic_words(const AudioControlPacket* packet)
+static inline int check_audio_packet_for_magic_words(volatile const AudioControlPacket* packet)
 {
     if(packet->magic_start[0] != 'm' ||
        packet->magic_start[1] != 'd' ||
@@ -50,7 +54,7 @@ inline int check_audio_packet_for_magic_words(const AudioControlPacket* packet)
  * @param packet the audio control packet
  * @return The audio packet command.
  */
-inline uint8_t get_audio_packet_cmd(const AudioControlPacket* packet)
+static inline uint8_t get_audio_packet_cmd(volatile const AudioControlPacket* packet)
 {
     return packet->cmd_msb;
 }
@@ -61,8 +65,8 @@ inline uint8_t get_audio_packet_cmd(const AudioControlPacket* packet)
  * @param the audio control packet
  * @param the packet's sequence number
  */
-inline void prepare_audio_mute_packet(AudioControlPacket* packet,
-                                      uint32_t seq_number)
+static inline void prepare_audio_mute_packet(volatile AudioControlPacket* packet,
+                                             uint32_t seq_number)
 {
     create_default_audio_control_packet(packet);
     packet->cmd_msb = AUDIO_CMD_MUTE;
@@ -75,8 +79,8 @@ inline void prepare_audio_mute_packet(AudioControlPacket* packet,
  * @param packet the audio control packet
  * @param the packet's sequence number
  */
-inline void prepare_audio_unmute_packet(AudioControlPacket* packet,
-                                        uint32_t seq_number)
+static inline void prepare_audio_unmute_packet(volatile AudioControlPacket* packet,
+                                               uint32_t seq_number)
 {
     create_default_audio_control_packet(packet);
     packet->cmd_msb = AUDIO_CMD_UNMUTE;
@@ -91,13 +95,16 @@ inline void prepare_audio_unmute_packet(AudioControlPacket* packet,
  *        packets payload.
  * @param the packet's sequence number
  */
-inline void prepare_gpio_cmd_packet(AudioControlPacket* packet,
-                                    const uint8_t* gpio_packet_data,
-                                    uint32_t seq_number)
+static inline void prepare_gpio_cmd_packet(volatile AudioControlPacket* packet,
+                                           const uint8_t* gpio_packet_data,
+                                           uint32_t seq_number)
 {
     create_default_audio_control_packet(packet);
     packet->cmd_msb = GPIO_PACKET;
-    memcpy(packet->payload, gpio_packet_data, GPIO_PACKET_SIZE);
+    for(int i = 0; i < GPIO_PACKET_SIZE; i++)
+    {
+        packet->payload[i] = gpio_packet_data[i];
+    }
     packet->seq = seq_number;
 }
 
@@ -109,10 +116,13 @@ inline void prepare_gpio_cmd_packet(AudioControlPacket* packet,
  * @param gpio_packet_data pointer to the location where the gpio data will be
  *        filled after being retreived from the payload.
  */
-inline void get_gpio_packet_data(const AudioControlPacket* packet,
-                                 uint8_t* gpio_packet_data)
+static inline void get_gpio_packet_data(volatile const AudioControlPacket* packet,
+                                        uint8_t* gpio_packet_data)
 {
-    memcpy(gpio_packet_data, packet->payload, GPIO_PACKET_SIZE);
+    for(int i = 0; i < GPIO_PACKET_SIZE; i++)
+    {
+        gpio_packet_data[i] = packet->payload[i];
+    }
 }
 
 /**
@@ -121,7 +131,7 @@ inline void get_gpio_packet_data(const AudioControlPacket* packet,
  * @param packet the audio control packet
  * @return The timing error.
  */
-inline int32_t get_timing_error(const AudioControlPacket* packet)
+static inline int32_t get_timing_error(volatile const AudioControlPacket* packet)
 {
     return packet->timing_error;
 }
@@ -132,7 +142,7 @@ inline int32_t get_timing_error(const AudioControlPacket* packet)
  * @param packet the audio control packet
  * @param timing_error The timing error
  */
-inline void set_timing_error(AudioControlPacket* packet, int32_t timing_error)
+static inline void set_timing_error(volatile AudioControlPacket* packet, int32_t timing_error)
 {
     packet->timing_error = timing_error;
 }
