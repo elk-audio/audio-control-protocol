@@ -21,7 +21,7 @@ extern "C" {
 static inline void create_default_audio_control_packet(volatile AudioControlPacket* packet)
 {
     volatile int* ptr = (int*)packet;
-    for(int i = 0; i < AUDIO_CONTROL_PACKET_SIZE/4; i++)
+    for(int i = 0; i < (int)(AUDIO_CONTROL_PACKET_SIZE/4); i++)
     {
         ptr[i] = 0;
     }
