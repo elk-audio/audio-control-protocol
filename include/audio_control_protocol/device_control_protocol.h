@@ -11,12 +11,10 @@
 #ifndef DEVICE_PROTOCOL_H_
 #define DEVICE_PROTOCOL_H_
 
-// Denotes the payload size in bytes that this protocol can carry
-#define DEVICE_PACKET_PAYLOAD_SIZE 8
+#include "audio_protocol_common.h"
 
-#ifndef __KERNEL__
-#include <stdint.h>
-#endif
+// Denotes the payload size in bytes that this protocol can carry
+#define DEVICE_PACKET_PAYLOAD_SIZE 11
 
 /**
  * enumeration of system commands
@@ -35,8 +33,11 @@ struct device_control_packet {
 	// magic start chars 'x', 'i'
 	uint8_t magic_start[2];
 
-	// command msb & lsb
+	// command msb
 	uint8_t device_cmd;
+
+	// reserved data for padding
+	uint8_t reserved;
 
 	// command payload
 	uint8_t payload[DEVICE_PACKET_PAYLOAD_SIZE];
@@ -45,6 +46,13 @@ struct device_control_packet {
 	uint8_t magic_stop;
 };
 
-#define DEVICE_CONTROL_PACKET_SIZE sizeof(struct device_control_packet)
+// Hardcoded size definitions to help optimization of loops.
+#define DEVICE_CONTROL_PACKET_SIZE 16
+#define DEVICE_CONTROL_PACKET_SIZE_WORDS 4
+
+COMPILER_VERIFY(sizeof(struct device_control_packet) ==
+	DEVICE_CONTROL_PACKET_SIZE);
+COMPILER_VERIFY(sizeof(struct device_control_packet)/4 ==
+	DEVICE_CONTROL_PACKET_SIZE_WORDS);
 
 #endif // DEVICE_PROTOCOL_H_
