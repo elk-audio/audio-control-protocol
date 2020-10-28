@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * @copyright 2017-2019 Modern Ancient Instruments Networked AB, dba Elk,
+ * @copyright 2017-2020 Modern Ancient Instruments Networked AB, dba Elk,
  * Stockholm
  */
 

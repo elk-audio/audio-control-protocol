@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * @copyright 2017-2019 Modern Ancient Instruments Networked AB, dba Elk,
+ * @copyright 2017-2020 Modern Ancient Instruments Networked AB, dba Elk,
  * Stockholm
  */
 
@@ -13,11 +13,15 @@
 
 #include "audio_protocol_common.h"
 
+#ifdef __cplusplus
+namespace device_ctrl {
+#endif
+
 // Denotes the payload size in bytes that this protocol can carry
-#define DEVICE_PACKET_PAYLOAD_SIZE 11
+#define DEVICE_CTRL_PKT_PAYLOAD_SIZE 8
 
 /**
- * enumeration of system commands
+ * @brief enumeration of system commands
  */
 enum device_commands {
 	DEVICE_CMD_NULL = 0,
@@ -27,9 +31,28 @@ enum device_commands {
 };
 
 /**
+ * @brief Represents the firmware version information
+ */
+struct device_version_data {
+	uint8_t major_vers;
+	uint8_t minor_vers;
+};
+
+/**
+ * @brief Union representing the various data that can constitute an device
+ *        control packet's payload. The total size should be equal to
+ *        DEVICE_CTRL_PKT_PAYLOAD_SIZE
+ */
+union device_pkt_payload {
+	uint8_t raw_data[DEVICE_CTRL_PKT_PAYLOAD_SIZE];
+	int buffer_size;
+	struct device_version_data version_data;
+};
+
+/**
  * @brief device control packet structure
  */
-struct device_control_packet {
+struct device_ctrl_pkt {
 	// magic start chars 'x', 'i'
 	uint8_t magic_start[2];
 
@@ -37,22 +60,28 @@ struct device_control_packet {
 	uint8_t device_cmd;
 
 	// reserved data for padding
-	uint8_t reserved;
+	uint8_t device_subcmd;
 
 	// command payload
-	uint8_t payload[DEVICE_PACKET_PAYLOAD_SIZE];
+	union device_pkt_payload payload;
+
+	// reserved data for padding
+	uint8_t reserved[3];
 
 	// magic stop char 'd'
 	uint8_t magic_stop;
 };
 
 // Hardcoded size definitions to help optimization of loops.
-#define DEVICE_CONTROL_PACKET_SIZE 16
-#define DEVICE_CONTROL_PACKET_SIZE_WORDS 4
+#define DEVICE_CTRL_PKT_SIZE 16
+#define DEVICE_CTRL_PKT_SIZE_WORDS 4
 
-COMPILER_VERIFY(sizeof(struct device_control_packet) ==
-	DEVICE_CONTROL_PACKET_SIZE);
-COMPILER_VERIFY(sizeof(struct device_control_packet)/4 ==
-	DEVICE_CONTROL_PACKET_SIZE_WORDS);
+COMPILER_VERIFY(sizeof(struct device_ctrl_pkt) == DEVICE_CTRL_PKT_SIZE);
+COMPILER_VERIFY(sizeof(struct device_ctrl_pkt)/4 == DEVICE_CTRL_PKT_SIZE_WORDS);
+COMPILER_VERIFY(sizeof(union device_pkt_payload) == DEVICE_CTRL_PKT_PAYLOAD_SIZE);
+
+#ifdef __cplusplus
+} // namespace device_ctrl
+#endif
 
 #endif // DEVICE_PROTOCOL_H_
