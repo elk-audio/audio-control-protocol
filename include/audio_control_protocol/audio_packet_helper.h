@@ -317,16 +317,39 @@ inline void set_timing_error(AudioCtrlPkt* const pkt,
 }
 
 /**
- * @brief Set the cv gate out val
+ * @brief Set the cv gate out val.
  *
  * @param pkt The audio control packet
  * @param cv_gate_out_val The value of all the gates, where each bit represents
  *        the value of an individual gate.
  */
-inline void set_cv_gate_out_val(AudioCtrlPkt* const pkt,
-                                uint32_t cv_gate_out_val)
+inline void set_gate_out_val(AudioCtrlPkt* const pkt,
+                             uint32_t gate_out_val)
 {
-    pkt->cv_gate_out = cv_gate_out_val;
+    pkt->gate_out = gate_out_val;
+}
+
+/**
+ * @brief Get the cv gate out val.
+ *
+ * @param pkt The audio control packet
+ */
+inline int get_gate_out_val(AudioCtrlPkt* const pkt)
+{
+    return pkt->gate_out;
+}
+
+/**
+ * @brief Set the cv gate in val
+ *
+ * @param pkt The audio control packet
+ * @param cv_gate_in_val The value of all the gates, where each bit represents
+ *        the value of an individual gate.
+ */
+inline void set_gate_in_val(AudioCtrlPkt* const pkt,
+                            uint32_t gate_in_val)
+{
+    pkt->gate_in = gate_in_val;
 }
 
 /**
@@ -336,9 +359,9 @@ inline void set_cv_gate_out_val(AudioCtrlPkt* const pkt,
  * @return uint32_t input CV gate value where each bit represents the value of
  *         one gate
  */
-inline uint32_t get_cv_gate_in_val(AudioCtrlPkt* const pkt)
+inline uint32_t get_gate_in_val(AudioCtrlPkt* const pkt)
 {
-    return pkt->cv_gate_in;
+    return pkt->gate_in;
 }
 
 #ifdef __cplusplus

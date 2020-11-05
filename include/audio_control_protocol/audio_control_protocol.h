@@ -92,11 +92,11 @@ typedef struct
     // timing error between xmos and audio host
     int32_t     timing_error;
 
-    // contains cv gate in data, each bit represents a gate
-    uint32_t    cv_gate_in;
+    // contains cv gate in data, each bit represents the value of a gate
+    uint32_t    gate_in;
 
-    // contains cv gate out data, each bit represents a gate
-    uint32_t    cv_gate_out;
+    // contains cv gate out data, each bit represents the value of a gate
+    uint32_t    gate_out;
 
     // N. of packets remaining in current message
     uint8_t     continuation;
