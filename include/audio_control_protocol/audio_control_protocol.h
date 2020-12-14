@@ -42,8 +42,8 @@ namespace audio_ctrl {
 #define AUDIO_CTRL_PKT_MAX_NUM_GPIO_DATA_BLOBS (AUDIO_CTRL_PKT_PAYLOAD_SIZE / AUDIO_CTRL_PKT_GPIO_DATA_BLOB_SIZE)
 
 // Hardcoded size definitions
-#define AUDIO_CTRL_PKT_SIZE 152
-#define AUDIO_CTRL_PKT_SIZE_WORDS 38
+#define AUDIO_CTRL_PKT_SIZE 256
+#define AUDIO_CTRL_PKT_SIZE_WORDS 64
 
 // stucture to represent gpio data
 struct GpioDataBlob
@@ -97,6 +97,9 @@ typedef struct
 
     // contains cv gate out data, each bit represents the value of a gate
     uint32_t    gate_out;
+
+    // Words to pad size of struct to 64
+    uint32_t padding[26];
 
     // N. of packets remaining in current message
     uint8_t     continuation;
