@@ -29,7 +29,7 @@
 namespace audio_ctrl {
 #endif
 
-// The max number of bytes which the protocol can carry as payload.
+// The max number of bytes which the protocol can carry as payload. 16 byte aligned
 #define AUDIO_CTRL_PKT_PAYLOAD_SIZE 128
 
 // Max number of input and output cv gates that this protocol supports
@@ -42,8 +42,8 @@ namespace audio_ctrl {
 #define AUDIO_CTRL_PKT_MAX_NUM_GPIO_DATA_BLOBS (AUDIO_CTRL_PKT_PAYLOAD_SIZE / AUDIO_CTRL_PKT_GPIO_DATA_BLOB_SIZE)
 
 // Hardcoded size definitions
-#define AUDIO_CTRL_PKT_SIZE 152
-#define AUDIO_CTRL_PKT_SIZE_WORDS 38
+#define AUDIO_CTRL_PKT_SIZE 160
+#define AUDIO_CTRL_PKT_SIZE_WORDS 40
 
 // stucture to represent gpio data
 struct GpioDataBlob
@@ -83,8 +83,11 @@ typedef struct
     uint8_t     cmd_msb;
     uint8_t     cmd_lsb;
 
-    // command payload
+    // command payload - 16 byte aligned
     union       AudioPacketPayload payload;
+
+    //Reserved data for 16 byte alignment
+    uint32_t    reserved[2];
 
     // Sequential packet number
     uint32_t    seq;
@@ -111,8 +114,8 @@ typedef struct
 // statically verify the hardcoded size definitions
 COMPILER_VERIFY(sizeof(AudioCtrlPkt) == AUDIO_CTRL_PKT_SIZE);
 COMPILER_VERIFY(sizeof(AudioCtrlPkt)/4 == AUDIO_CTRL_PKT_SIZE_WORDS);
-COMPILER_VERIFY(sizeof(union AudioPacketPayload) == 128);
-COMPILER_VERIFY((sizeof(struct GpioDataBlob) * AUDIO_CTRL_PKT_MAX_NUM_GPIO_DATA_BLOBS) == sizeof(union AudioPacketPayload));
+COMPILER_VERIFY(sizeof(union AudioPacketPayload) == AUDIO_CTRL_PKT_PAYLOAD_SIZE);
+COMPILER_VERIFY((sizeof(struct GpioDataBlob) * AUDIO_CTRL_PKT_MAX_NUM_GPIO_DATA_BLOBS) <= sizeof(union AudioPacketPayload));
 
 #ifdef __cplusplus
 } // namespace audio_ctrl
