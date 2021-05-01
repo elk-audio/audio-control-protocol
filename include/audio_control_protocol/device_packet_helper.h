@@ -105,12 +105,14 @@ inline void prepare_version_check_query_pkt(struct device_ctrl_pkt* const pkt)
  */
 inline void prepare_version_check_reply_pkt(struct device_ctrl_pkt* const pkt,
 						uint8_t major_vers,
-						uint8_t minor_vers)
+						uint8_t minor_vers,
+						uint8_t board_vers)
 {
 	create_default_device_ctrl_pkt(pkt);
 	pkt->device_cmd = DEVICE_FIRMWARE_VERSION_CHECK;
 	pkt->payload.version_data.major_vers = major_vers;
 	pkt->payload.version_data.minor_vers = minor_vers;
+	pkt->payload.version_data.board_vers = board_vers;
 }
 
 /**
@@ -124,17 +126,30 @@ inline void prepare_version_check_reply_pkt(struct device_ctrl_pkt* const pkt,
  *
  * @return 1 if version matches, 0 if not
  */
-inline int check_if_version_matches(const struct device_ctrl_pkt*
-					const pkt,
+inline int check_if_fw_vers_matches(const struct device_ctrl_pkt* const pkt,
 					uint8_t expected_major_vers,
 					uint8_t expected_minor_vers)
 {
-	if (pkt->payload.version_data.major_vers != expected_major_vers ||
+	if (pkt->device_cmd != DEVICE_FIRMWARE_VERSION_CHECK ||
+		pkt->payload.version_data.major_vers != expected_major_vers ||
 		pkt->payload.version_data.minor_vers != expected_minor_vers) {
 		return 0;
 	}
 
 	return 1;
+}
+
+/**
+ * @brief Get the board version from the packet,(assuming that the packet
+ *        containing version check cmd and data).
+ *
+ * @param pkt the device control packet containing the reply to a version check
+ *            command
+ * @return int The board version
+ */
+inline uint8_t get_board_vers(const struct device_ctrl_pkt* const pkt)
+{
+	return pkt->payload.version_data.board_vers;
 }
 
 /**
@@ -190,6 +205,58 @@ inline void prepare_stop_cmd_pkt(struct device_ctrl_pkt* pkt)
 {
 	create_default_device_ctrl_pkt(pkt);
 	pkt->device_cmd = DEVICE_STOP;
+}
+
+/**
+ * @brief Create a packet with a command to enable input gain
+ *
+ * @param pkt The device control packet
+ */
+inline void prepare_enable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_ENABLE_INPUT_GAIN;
+}
+
+/**
+ * @brief Create a packet with a command to disable input gain
+ *
+ * @param pkt The device control packet
+ */
+inline void prepare_disable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_DISABLE_INPUT_GAIN;
+}
+
+/**
+ * @brief Check if packet has a command to enable input gain
+ *
+ * @param pkt The device control packet
+ * @return 1 if the packet has command to enable input gain, 0 if not
+ */
+inline int check_for_enable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_ENABLE_INPUT_GAIN) {
+		return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * @brief Check if packet has a command to disable input gain
+ *
+ * @param pkt The device control packet
+ * @return 1 if the packet has command to disable input gain, 0 if not
+ */
+inline int check_for_disable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_DISABLE_INPUT_GAIN) {
+		return 1;
+	}
+
+	return 0;
 }
 
 #ifdef __cplusplus

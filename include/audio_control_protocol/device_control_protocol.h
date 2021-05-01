@@ -27,6 +27,8 @@ enum device_commands {
 	DEVICE_CMD_NULL = 0,
 	DEVICE_FIRMWARE_VERSION_CHECK = 191,
 	DEVICE_START = 123,
+	DEVICE_ENABLE_INPUT_GAIN = 124,
+	DEVICE_DISABLE_INPUT_GAIN = 125,
 	DEVICE_STOP = 234
 };
 
@@ -36,6 +38,7 @@ enum device_commands {
 struct device_version_data {
 	uint8_t major_vers;
 	uint8_t minor_vers;
+	uint8_t board_vers;
 };
 
 /**
