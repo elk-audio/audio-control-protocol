@@ -30,7 +30,7 @@ namespace audio_ctrl {
 #endif
 
 // The max number of bytes which the protocol can carry as payload. 16 byte aligned
-#define AUDIO_CTRL_PKT_PAYLOAD_SIZE 128
+#define AUDIO_CTRL_PKT_PAYLOAD_SIZE 112
 
 // Max number of input and output cv gates that this protocol supports
 #define AUDIO_CTRL_PKT_MAX_NUM_CV_IN_GATES 16
@@ -42,8 +42,8 @@ namespace audio_ctrl {
 #define AUDIO_CTRL_PKT_MAX_NUM_GPIO_DATA_BLOBS (AUDIO_CTRL_PKT_PAYLOAD_SIZE / AUDIO_CTRL_PKT_GPIO_DATA_BLOB_SIZE)
 
 // Hardcoded size definitions
-#define AUDIO_CTRL_PKT_SIZE 160
-#define AUDIO_CTRL_PKT_SIZE_WORDS 40
+#define AUDIO_CTRL_PKT_SIZE 144
+#define AUDIO_CTRL_PKT_SIZE_WORDS 36
 
 // stucture to represent gpio data
 struct GpioDataBlob
