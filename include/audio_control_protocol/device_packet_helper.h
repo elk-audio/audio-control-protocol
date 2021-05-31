@@ -259,6 +259,119 @@ inline int check_for_disable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
 	return 0;
 }
 
+/**
+ * @brief Create a packet with a command to set input type for a jack
+ *
+ * @param pkt The device control packet
+ * @param input_type one of device_input_type
+ * @param jack_id the jack for which the input type has to be changed.
+ */
+inline void prepare_change_input_type_cmd_pkt(struct device_ctrl_pkt* pkt,
+					enum device_input_type input_type,
+					uint32_t jack_id)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_CHANGE_INPUT_TYPE;
+	pkt->payload.input_type_data.input_type = input_type;
+	pkt->payload.input_type_data.jack_id = jack_id;
+}
+
+
+/**
+ * @brief check if packet has a change input type command
+ *
+ * @param pkt The device control packet
+ * @return 1 if true, 0 if not
+ */
+inline int check_for_change_input_type_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_CHANGE_INPUT_TYPE) {
+		return 1;
+	}
+
+	return 0;
+}
+
+inline struct device_input_type_data* get_change_input_type_data
+						(struct device_ctrl_pkt* pkt)
+{
+	return &pkt->payload.input_type_data;
+}
+
+/**
+ * @brief Create a packet with a command to set input gain for a jack
+ *
+ * @param pkt The device control packet
+ * @param gain_val The value to be written to the codec's gain register
+ * @param jack_id the jack for which the input gain has to be changed.
+ */
+inline void prepare_change_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt,
+					uint32_t gain_val,
+					uint32_t jack_id)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_CHANGE_INPUT_GAIN;
+	pkt->payload.input_gain_data.gain_val = gain_val;
+	pkt->payload.input_gain_data.jack_id = jack_id;
+}
+
+
+/**
+ * @brief check if packet has a change input gain command
+ *
+ * @param pkt The device control packet
+ * @return 1 if true, 0 if not
+ */
+inline int check_for_change_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_CHANGE_INPUT_GAIN) {
+		return 1;
+	}
+
+	return 0;
+}
+
+inline struct device_input_gain_data* get_change_input_gain_data
+						(struct device_ctrl_pkt* pkt)
+{
+	return &pkt->payload.input_gain_data;
+}
+
+/**
+ * @brief Create a packet with a command to set output vol
+ *
+ * @param pkt The device control packet
+ * @param vol_val The value to be written to the codec's hp vol register
+ */
+inline void prepare_change_hp_vol_cmd_pkt(struct device_ctrl_pkt* pkt,
+					uint32_t vol_val)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_CHANGE_HP_VOL;
+	pkt->payload.hp_vol_data = vol_val;
+}
+
+
+/**
+ * @brief check if packet has a change hp vol command
+ *
+ * @param pkt The device control packet
+ * @return 1 if true, 0 if not
+ */
+inline int check_for_change_hp_vol_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_CHANGE_HP_VOL) {
+		return 1;
+	}
+
+	return 0;
+}
+
+inline uint32_t get_change_hp_vol_data(struct device_ctrl_pkt* pkt)
+{
+	return pkt->payload.hp_vol_data;
+}
+
 #ifdef __cplusplus
 } // namespace device_ctrl
 #endif

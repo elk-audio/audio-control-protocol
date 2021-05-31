@@ -29,7 +29,20 @@ enum device_commands {
 	DEVICE_START = 123,
 	DEVICE_ENABLE_INPUT_GAIN = 124,
 	DEVICE_DISABLE_INPUT_GAIN = 125,
+	DEVICE_CHANGE_INPUT_TYPE = 126,
+	DEVICE_CHANGE_INPUT_GAIN = 127,
+	DEVICE_CHANGE_HP_VOL = 128,
 	DEVICE_STOP = 234
+};
+
+/**
+ * @brief Enumeration of different input types, sent as part of the payload
+ *        for command DEVICE_CHANGE_INPUT_TYPE
+ */
+enum device_input_type {
+	DEVICE_INPUT_TYPE_LINE = 0,
+	DEVICE_INPUT_TYPE_INSTRUMENT = 1,
+	DEVICE_INPUT_TYPE_MIC = 2,
 };
 
 /**
@@ -42,6 +55,24 @@ struct device_version_data {
 };
 
 /**
+ * @brief Represents info sent along with a DEVICE_CHANGE_INPUT_TYPE command
+ */
+struct device_input_type_data {
+	enum device_input_type input_type;
+	uint32_t jack_id;
+};
+
+/**
+ * @brief Represents info sent along with a DEVICE_CHANGE_INPUT_GAIN command
+ * @param gain_val The value of the gain that will be copied to the codec gain register
+ * @param jack_id The jack id for which the gain has to be applied
+ */
+struct device_input_gain_data {
+	uint32_t gain_val;
+	uint32_t jack_id;
+};
+
+/**
  * @brief Union representing the various data that can constitute an device
  *        control packet's payload. The total size should be equal to
  *        DEVICE_CTRL_PKT_PAYLOAD_SIZE
@@ -50,6 +81,9 @@ union device_pkt_payload {
 	uint8_t raw_data[DEVICE_CTRL_PKT_PAYLOAD_SIZE];
 	int buffer_size;
 	struct device_version_data version_data;
+	struct device_input_type_data input_type_data;
+	struct device_input_gain_data input_gain_data;
+	uint32_t hp_vol_data;
 };
 
 /**
