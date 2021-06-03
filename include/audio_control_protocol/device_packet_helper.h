@@ -372,6 +372,50 @@ inline uint32_t get_change_hp_vol_data(struct device_ctrl_pkt* pkt)
 	return pkt->payload.hp_vol_data;
 }
 
+/**
+ * @brief Prepare a command to set phantom pwr on or off
+ *
+ * @param pkt The device ctrl pkt
+ * @param pwr_state one of phantom_pwr_state.
+ * @param jack_id the jack for which phantom power should be enabled/disabled
+ */
+inline void prepare_set_phantom_pwr_cmd(struct device_ctrl_pkt* pkt,
+					enum phantom_pwr_state pwr_state,
+					uint32_t jack_id)
+{
+	create_default_device_ctrl_pkt(pkt);
+	pkt->device_cmd = DEVICE_SET_PHANTOM_PWR;
+	pkt->payload.phantom_pwr_data.state = pwr_state;
+	pkt->payload.phantom_pwr_data.jack_id = jack_id;
+}
+
+/**
+ * @brief Check if packet has a set phantom power command
+ *
+ * @param pkt The device ctrl pkt
+ * @return int 1 if true, 0 if false
+ */
+inline int check_for_set_phantom_pwr_cmd_pkt(struct device_ctrl_pkt* pkt)
+{
+	if (pkt->device_cmd == DEVICE_SET_PHANTOM_PWR) {
+		return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * @brief Get the packet's device_phantom_pwr_data from the payload
+ *
+ * @param pkt the device ctrl packet
+ * @return struct device_phantom_pwr_data* Pointer to the payload data containing device_phantom_pwr_data
+ */
+inline struct device_phantom_pwr_data* get_device_phantom_pwr_data
+						(struct device_ctrl_pkt* pkt)
+{
+	return &pkt->payload.phantom_pwr_data;
+}
+
 #ifdef __cplusplus
 } // namespace device_ctrl
 #endif

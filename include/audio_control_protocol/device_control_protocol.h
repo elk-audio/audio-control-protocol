@@ -32,6 +32,7 @@ enum device_commands {
 	DEVICE_CHANGE_INPUT_TYPE = 126,
 	DEVICE_CHANGE_INPUT_GAIN = 127,
 	DEVICE_CHANGE_HP_VOL = 128,
+	DEVICE_SET_PHANTOM_PWR = 129,
 	DEVICE_STOP = 234
 };
 
@@ -43,6 +44,14 @@ enum device_input_type {
 	DEVICE_INPUT_TYPE_LINE = 0,
 	DEVICE_INPUT_TYPE_INSTRUMENT = 1,
 	DEVICE_INPUT_TYPE_MIC = 2,
+};
+
+/**
+ * @brief Enumeration to denote phantom power states
+ */
+enum phantom_pwr_state {
+	DEVICE_PHANTOM_POWER_OFF = 0,
+	DEVICE_PHANTOM_POWER_ON = 1,
 };
 
 /**
@@ -59,6 +68,14 @@ struct device_version_data {
  */
 struct device_input_type_data {
 	enum device_input_type input_type;
+	uint32_t jack_id;
+};
+
+/**
+ * @brief Represents info sent along with a DEVICE_SET_PHANTOM_PWR command
+ */
+struct device_phantom_pwr_data {
+	enum phantom_pwr_state state;
 	uint32_t jack_id;
 };
 
@@ -84,6 +101,7 @@ union device_pkt_payload {
 	struct device_input_type_data input_type_data;
 	struct device_input_gain_data input_gain_data;
 	uint32_t hp_vol_data;
+	struct device_phantom_pwr_data phantom_pwr_data;
 };
 
 /**
