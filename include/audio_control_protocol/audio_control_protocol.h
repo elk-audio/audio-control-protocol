@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Modern Ancient Instruments Networked AB, dba Elk
+ * Copyright 2018-2021 Modern Ancient Instruments Networked AB, dba Elk
  * Audio Control Protocol is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -18,7 +18,7 @@
  * @brief Protocol definition for messages in audio control headers. This
  *        can be used by the primary host computer to control and exchange
  *        audio, midi and other data with secondary microcontrollers.
- * @copyright 2018-2020 Modern Ancient Instruments Networked AB, dba Elk, Stockholm
+ * @copyright 2018-2021 Modern Ancient Instruments Networked AB, dba Elk, Stockholm
  */
 #ifndef AUDIO_PROTOCOL_H_
 #define AUDIO_PROTOCOL_H_
