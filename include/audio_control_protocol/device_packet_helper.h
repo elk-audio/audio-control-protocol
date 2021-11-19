@@ -66,6 +66,7 @@ inline void create_default_device_ctrl_pkt(struct device_ctrl_pkt*
 	pkt->magic_start[0] = 'x';
 	pkt->magic_start[1] = 'i';
 	pkt->magic_stop = 'd';
+	pkt->device_cmd = DEVICE_CMD_NULL;
 }
 
 /**
@@ -80,6 +81,22 @@ inline int check_device_pkt_for_magic_words(const struct
 	if (pkt->magic_start[0] != 'x' ||
 		pkt->magic_start[1] != 'i' ||
 		pkt->magic_stop != 'd') {
+		return 0;
+	}
+
+	return 1;
+}
+
+/**
+ * @brief Check if a device packet has a null command
+ *
+ * @param pkt The device control packet
+ * @return int 1 if true, 0 if false
+ */
+inline int check_device_pkt_for_null_cmd(const struct
+					device_ctrl_pkt* const pkt)
+{
+	if (pkt->device_cmd != DEVICE_CMD_NULL) {
 		return 0;
 	}
 
@@ -225,97 +242,6 @@ inline void prepare_stop_cmd_pkt(struct device_ctrl_pkt* pkt)
 }
 
 /**
- * @brief Create a packet with a command to enable input gain
- *
- * @param pkt The device control packet
- */
-inline void prepare_enable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	create_default_device_ctrl_pkt(pkt);
-	pkt->device_cmd = DEVICE_ENABLE_INPUT_GAIN;
-}
-
-/**
- * @brief Create a packet with a command to disable input gain
- *
- * @param pkt The device control packet
- */
-inline void prepare_disable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	create_default_device_ctrl_pkt(pkt);
-	pkt->device_cmd = DEVICE_DISABLE_INPUT_GAIN;
-}
-
-/**
- * @brief Check if packet has a command to enable input gain
- *
- * @param pkt The device control packet
- * @return 1 if the packet has command to enable input gain, 0 if not
- */
-inline int check_for_enable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	if (pkt->device_cmd == DEVICE_ENABLE_INPUT_GAIN) {
-		return 1;
-	}
-
-	return 0;
-}
-
-/**
- * @brief Check if packet has a command to disable input gain
- *
- * @param pkt The device control packet
- * @return 1 if the packet has command to disable input gain, 0 if not
- */
-inline int check_for_disable_input_gain_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	if (pkt->device_cmd == DEVICE_DISABLE_INPUT_GAIN) {
-		return 1;
-	}
-
-	return 0;
-}
-
-/**
- * @brief Create a packet with a command to set input type for a jack
- *
- * @param pkt The device control packet
- * @param input_type one of device_input_type
- * @param jack_id the jack for which the input type has to be changed.
- */
-inline void prepare_change_input_type_cmd_pkt(struct device_ctrl_pkt* pkt,
-					enum device_input_type input_type,
-					uint32_t jack_id)
-{
-	create_default_device_ctrl_pkt(pkt);
-	pkt->device_cmd = DEVICE_CHANGE_INPUT_TYPE;
-	pkt->payload.input_type_data.input_type = input_type;
-	pkt->payload.input_type_data.jack_id = jack_id;
-}
-
-
-/**
- * @brief check if packet has a change input type command
- *
- * @param pkt The device control packet
- * @return 1 if true, 0 if not
- */
-inline int check_for_change_input_type_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	if (pkt->device_cmd == DEVICE_CHANGE_INPUT_TYPE) {
-		return 1;
-	}
-
-	return 0;
-}
-
-inline struct device_input_type_data* get_change_input_type_data
-						(struct device_ctrl_pkt* pkt)
-{
-	return &pkt->payload.input_type_data;
-}
-
-/**
  * @brief Create a packet with a command to set input gain for a jack
  *
  * @param pkt The device control packet
@@ -395,48 +321,33 @@ inline uint32_t get_change_hp_vol_data(struct device_ctrl_pkt* pkt)
 	return pkt->payload.hp_vol_data;
 }
 
-/**
- * @brief Prepare a command to set phantom pwr on or off
- *
- * @param pkt The device ctrl pkt
- * @param pwr_state one of phantom_pwr_state.
- * @param jack_id the jack for which phantom power should be enabled/disabled
- */
-inline void prepare_set_phantom_pwr_cmd(struct device_ctrl_pkt* pkt,
-					enum phantom_pwr_state pwr_state,
-					uint32_t jack_id)
+inline void prepare_set_rgb_led_val_cmd(struct device_ctrl_pkt* pkt,
+					uint32_t rgb_led_id,
+					struct device_rgb_led_val* rgb_led_val)
 {
 	create_default_device_ctrl_pkt(pkt);
-	pkt->device_cmd = DEVICE_SET_PHANTOM_PWR;
-	pkt->payload.phantom_pwr_data.state = pwr_state;
-	pkt->payload.phantom_pwr_data.jack_id = jack_id;
+	pkt->device_cmd = DEVICE_SET_RGB_LED_VAL;
+
+	pkt->payload.rgb_led_data.rgb_led_id = rgb_led_id;
+
+	pkt->payload.rgb_led_data.rgb_led_val.brightness =
+							rgb_led_val->brightness;
+	pkt->payload.rgb_led_data.rgb_led_val.r_val = rgb_led_val->r_val;
+	pkt->payload.rgb_led_data.rgb_led_val.g_val = rgb_led_val->g_val;
+	pkt->payload.rgb_led_data.rgb_led_val.b_val = rgb_led_val->b_val;
 }
 
-/**
- * @brief Check if packet has a set phantom power command
- *
- * @param pkt The device ctrl pkt
- * @return int 1 if true, 0 if false
- */
-inline int check_for_set_phantom_pwr_cmd_pkt(struct device_ctrl_pkt* pkt)
-{
-	if (pkt->device_cmd == DEVICE_SET_PHANTOM_PWR) {
+inline int check_for_rgb_led_val_cmd_pkt(struct device_ctrl_pkt* pkt) {
+	if (pkt->device_cmd == DEVICE_SET_RGB_LED_VAL) {
 		return 1;
 	}
 
 	return 0;
 }
 
-/**
- * @brief Get the packet's device_phantom_pwr_data from the payload
- *
- * @param pkt the device ctrl packet
- * @return struct device_phantom_pwr_data* Pointer to the payload data containing device_phantom_pwr_data
- */
-inline struct device_phantom_pwr_data* get_device_phantom_pwr_data
-						(struct device_ctrl_pkt* pkt)
+inline struct device_rgb_led_data* get_rgb_led_data(struct device_ctrl_pkt* pkt)
 {
-	return &pkt->payload.phantom_pwr_data;
+	return &pkt->payload.rgb_led_data;
 }
 
 #ifdef __cplusplus
