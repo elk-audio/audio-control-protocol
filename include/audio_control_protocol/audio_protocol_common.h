@@ -28,8 +28,8 @@
 #define AUDIO_PROTOCOL_COMMON_H_
 
 #define AUDIO_PROTOCOL_VERSION_MAJ 0
-#define AUDIO_PROTOCOL_VERSION_MIN 4
-#define AUDIO_PROTOCOL_VERSION_REV 1
+#define AUDIO_PROTOCOL_VERSION_MIN 5
+#define AUDIO_PROTOCOL_VERSION_REV 0
 
 // static assert implementation for xmos platform
 #ifdef __XC__
