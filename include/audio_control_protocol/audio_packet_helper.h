@@ -39,7 +39,7 @@ namespace audio_ctrl {
 #endif
 inline void clear_audio_ctrl_pkt(AudioCtrlPkt* const pkt)
 {
-    uint32_t* pkt_data = (uint32_t*) pkt;
+    volatile uint32_t* pkt_data = (uint32_t*) pkt;
     for (uint32_t i = 0; i < AUDIO_CTRL_PKT_SIZE_WORDS; i++)
     {
         pkt_data[i] = 0;
